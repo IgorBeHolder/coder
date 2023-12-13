@@ -2,12 +2,14 @@ version: '3.9'
 
 services:
   coder:
-    restart: unless-stopped 
+    restart:  always
     image: coder:latest
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile2
     container_name: coder
+    volumes:
+      - ./content:/home/coder/content
     ports:
       - "2222:22"
     networks:

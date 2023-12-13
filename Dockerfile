@@ -7,7 +7,8 @@ RUN apt-get update && \
 
 # Install Python 3.11.5 and statistical libraries
 RUN apt-get install -y python3-pip
-RUN --mount=type=cache,target=/tmp/pip_cache pip3 install numpy scipy pandas matplotlib scikit-learn open-interpreter
+
+RUN --mount=type=cache,target=/tmp/pip_cache pip3 install -r requirements.txt
 
 # Set up SSH
 RUN mkdir /var/run/sshd
@@ -21,7 +22,7 @@ RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid
 
 COPY interpreter/terminal_interface/config.yaml /home/coder
 
-RUN echo "interpreter -cf /home/coder/config.yaml && %reset" >> /home/coder/.bashrc
+RUN echo "interpreter -cf /interpreter/terminal_interface/config.yaml && %reset" >> /home/coder/.bashrc
 
 
 # Expose the SSH port
