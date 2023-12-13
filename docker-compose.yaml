@@ -6,7 +6,7 @@ services:
     image: coder:latest
     build:
       context: .
-      dockerfile: Dockerfile2
+      dockerfile: Dockerfile
     container_name: coder
     volumes:
       - ./content:/home/coder/content

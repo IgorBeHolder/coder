@@ -1,32 +1,60 @@
-# Use Ubuntu 22.04 as the base image
-FROM ubuntu:22.04
+# Start with the official Python 3.11.3 image
+FROM python:3.11.3
 
-# Update and install necessary packages
-RUN apt-get update && \
-    apt-get install -y openssh-server sudo
+# Update and install dependencies for SSH server and any additional system libraries
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    zlib1g-dev \
+    liblzma-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    wget \
+    curl \
+    llvm \
+    libncurses5-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev 
 
-# Install Python 3.11.5 and statistical libraries
-RUN apt-get install -y python3-pip
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+# Add Poetry to PATH
+ENV PATH="/root/.local/bin:$PATH"
 
-RUN --mount=type=cache,target=/tmp/pip_cache pip3 install -r requirements.txt
+# Set Poetry configuration to not create a virtual environment inside the Docker container
+ENV POETRY_VIRTUALENVS_CREATE=false
 
-# Set up SSH
+# Copy your 'pyproject.toml' and 'poetry.lock' files into the Docker image
+COPY pyproject.toml poetry.lock* /home/
+
+# Install Python dependencies
+WORKDIR /home
+RUN poetry install --no-dev
+
+RUN --mount=type=cache,target=/tmp/pip_cache pip3 install numpy scipy pandas matplotlib scikit-learn open-interpreter
+
+# Create SSH directory
 RUN mkdir /var/run/sshd
-# Add a user and give it sudo privileges
+# Set up a user for SSH
 RUN useradd -rm -d /home/coder -s /bin/bash -g root -G sudo -u 1001 coder
+# Replace 'your_password' with a secure password
 RUN echo 'coder:coder' | chpasswd
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN chown -R coder:root /home
 
 # SSH login fix. Otherwise, the user is kicked off after login
-RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
-COPY interpreter/terminal_interface/config.yaml /home/coder
-
-RUN echo "interpreter -cf /interpreter/terminal_interface/config.yaml && %reset" >> /home/coder/.bashrc
-
-
-# Expose the SSH port
 EXPOSE 22
 
-# Start SSH service
+RUN mkdir /home/coder/content
+COPY interpreter/terminal_interface/config.yaml /usr/local/lib/python3.11/site-packages/interpreter/terminal_interface/config.yaml
+
+RUN echo "interpreter && %reset" >> /home/coder/.bashrc
+
+# Start the SSH service
 CMD ["/usr/sbin/sshd", "-D"]
+

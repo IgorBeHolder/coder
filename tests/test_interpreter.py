@@ -18,7 +18,7 @@ def setup_function():
     interpreter.reset()
     interpreter.temperature = 0
     interpreter.auto_run = True
-    interpreter.model = "gpt-3.5-turbo"
+    interpreter.model = "openai//model-store/openchat/openchat_3.5"
     interpreter.debug_mode = False
 
 
