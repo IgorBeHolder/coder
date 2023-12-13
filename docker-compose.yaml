@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  coder:
+    restart: unless-stopped 
+    image: coder:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coder
+    ports:
+      - "2222:22"
+    networks:
+      - llm-net
+networks:
+  llm-net:
+    name: llm-net
+    external: true
+
+# docker-compose -p localrag up -d --build
