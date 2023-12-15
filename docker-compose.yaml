@@ -6,10 +6,11 @@ services:
     image: coder:latest
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile2
     container_name: coder
     volumes:
-      - ./content:/home/coder/content
+      - ./content:/home/coder
+      # - ./content:/home/coder/content      
     ports:
       - "2222:22"
     networks:

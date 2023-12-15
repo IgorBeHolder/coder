@@ -26,9 +26,9 @@ from .utils.find_image_path import find_image_path
 
 # Add examples to the readline history
 examples = [
-    "How many files are on my desktop?",
-    "What time is it in Seattle?",
-    "Make me a simple Pomodoro app.",
+    "Сколько файлов в текущем каталоге?",
+    "Выведи сводку по системным ресурсам компьютера?",
+    "Сделай простое приоржение Pomodoro.",
     "Open Chrome and go to YouTube.",
 ]
 # random.shuffle(examples)
@@ -41,7 +41,7 @@ def terminal_interface(interpreter, message):
     # Probably worth abstracting this to something like "verbose_cli" at some point.
     if not interpreter.auto_run and not interpreter.local:
         interpreter_intro_message = [
-            "**Open Interpreter** will require approval before running code."
+            "**Open Interpreter** требует одобрения для выполнения этого кода."
         ]
 
         if interpreter.safe_mode == "ask" or interpreter.safe_mode == "auto":
@@ -50,9 +50,9 @@ def terminal_interface(interpreter, message):
                     f"**Safe Mode**: {interpreter.safe_mode}\n\n>Note: **Safe Mode** requires `semgrep` (`pip install semgrep`)"
                 )
         else:
-            interpreter_intro_message.append("Use `interpreter -y` to bypass this.")
+            interpreter_intro_message.append("Используйте `interpreter -y` для обхода этого.")
 
-        interpreter_intro_message.append("Press `CTRL-C` to exit.")
+        interpreter_intro_message.append("Нажмите `CTRL-C` для выхода.")
 
         display_markdown_message("\n\n".join(interpreter_intro_message) + "\n")
 
@@ -62,11 +62,11 @@ def terminal_interface(interpreter, message):
         interactive = True
 
     pause_force_task_completion_loop = False
-    force_task_completion_message = """Proceed. If you want to write code, start your message with "```"! If the entire task I asked for is done, say exactly 'The task is done.' If it's impossible, say 'The task is impossible.' (If I haven't provided a task, say exactly 'Let me know what you'd like to do next.') Otherwise keep going."""
+    force_task_completion_message = """Продолжить. Если вы хотите написать код, начните свое сообщение с "```"! Если вся задача, которую я просил, выполнена, скажите точно 'Задача выполнена.' Если выполнение не возможно, скадите 'Задача нельзя выполнить.' (Если я не поставил задачу, скажите именно: 'Дайте мне знать, что вы хотите делать дальше.') Иначе проложаем."""
     force_task_completion_responses = [
-        "the task is done.",
-        "the task is impossible.",
-        "let me know what you'd like to do next.",
+        "задача выполнена.",
+        "задание невыполнимо.",
+        "сообщите мне, что вы теперь хотите сделать.",
     ]
     voice_subprocess = None
 
@@ -278,22 +278,23 @@ def terminal_interface(interpreter, message):
                                 should_scan_code = True
                             elif interpreter.safe_mode == "ask":
                                 response = input(
-                                    "  Would you like to scan this code? (y/n)\n\n  "
+                                    "  Вы хотите выаолнить этот код? (д/н)\n\n   "
                                 )
                                 print("")  # <- Aesthetic choice
 
-                                if response.strip().lower() == "y":
+                                if response.strip().lower() == "д":
                                     should_scan_code = True
 
                         if should_scan_code:
                             scan_code(code, language, interpreter)
 
                         response = input(
-                            "  Would you like to run this code? (y/n)\n\n  "
+                            "  Вы хотите выаолнить этот код? (д/н)\n\n  "
                         )
+
                         print("")  # <- Aesthetic choice
 
-                        if response.strip().lower() == "y":
+                        if response.strip().lower() == "д":
                             # Create a new, identical block where the code will actually be run
                             # Conveniently, the chunk includes everything we need to do this:
                             active_block = CodeBlock()
@@ -306,7 +307,7 @@ def terminal_interface(interpreter, message):
                                 {
                                     "role": "user",
                                     "type": "message",
-                                    "content": "I have declined to run this code.",
+                                    "content": "Вы отказались от выполнения данного кода.",
                                 }
                             )
                             break
