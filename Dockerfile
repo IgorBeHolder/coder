@@ -35,9 +35,14 @@ COPY pyproject.toml poetry.lock* /home/
 WORKDIR /home
 RUN poetry install --no-dev
 
+RUN pip3 install --upgrade pip
+
 RUN --mount=type=cache,target=/tmp/pip_cache pip3 install \
-    numpy scipy pandas matplotlib open-interpreter \
+    numpy scipy pandas matplotlib  \
     fastapi uvicorn scikit-learn
+    
+RUN pip3 install open-interpreter
+
 
 # Create SSH directory
 RUN mkdir /var/run/sshd

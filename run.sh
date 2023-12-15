@@ -6,5 +6,6 @@
 /usr/sbin/sshd -D &&
 
 echo "Starting the interpreter" &&
-interpreter
+# interpreter
+python3 /home/interpreter.py
 

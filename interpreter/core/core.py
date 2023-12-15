@@ -7,15 +7,17 @@ import json
 import os
 from datetime import datetime
 
-from ..terminal_interface.start_terminal_interface import start_terminal_interface
-from ..terminal_interface.terminal_interface import terminal_interface
-from ..terminal_interface.utils.get_config import get_config, user_config_path
-from ..terminal_interface.utils.local_storage_path import get_storage_path
-from .computer.computer import Computer
-from .generate_system_message import generate_system_message
-from .llm.setup_llm import setup_llm
-from .respond import respond
-from .utils.truncate_output import truncate_output
+from terminal_interface import start_terminal_interface
+# from terminal_interface import terminal_interface
+import terminal_interface
+from terminal_interface.utils import get_config
+from terminal_interface.utils.local_storage_path import get_storage_path
+# from computer.computer import Computer
+# from computer import computer
+from interpreter.core import generate_system_message
+from interpreter.core.llm import setup_llm
+from interpreter.core import respond
+from interpreter.core.utils.truncate_output import truncate_output
 
 
 class Interpreter:
